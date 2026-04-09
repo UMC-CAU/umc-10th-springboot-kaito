@@ -1,7 +1,9 @@
 package com.example.umc10th_kaito.domain.mission.entity;
 
 import com.example.umc10th_kaito.domain.common.BaseEntity;
+import com.example.umc10th_kaito.domain.mission.enums.MissionActiveStatus;
 import com.example.umc10th_kaito.domain.mission.enums.RewardType;
+import com.example.umc10th_kaito.domain.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,7 +34,7 @@ public class Mission extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
-    private String status;
+    private MissionActiveStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")

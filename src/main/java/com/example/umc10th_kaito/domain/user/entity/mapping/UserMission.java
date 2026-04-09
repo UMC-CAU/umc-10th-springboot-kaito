@@ -1,7 +1,8 @@
-package com.example.umc10th_kaito.domain.user.entity;
+package com.example.umc10th_kaito.domain.user.entity.mapping;
 
 import com.example.umc10th_kaito.domain.common.BaseEntity;
 import com.example.umc10th_kaito.domain.mission.entity.Mission;
+import com.example.umc10th_kaito.domain.user.entity.User;
 import com.example.umc10th_kaito.domain.user.enums.MissionStatus;
 import jakarta.persistence.*;
 import lombok.*;

@@ -2,12 +2,13 @@ package com.example.umc10th_kaito.domain.store.entity;
 
 import com.example.umc10th_kaito.domain.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Entity
 @Getter
 @Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 
 public class Store extends BaseEntity {
     @Id
