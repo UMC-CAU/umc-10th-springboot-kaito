@@ -1,4 +1,5 @@
 package com.example.umc10th_kaito.domain.mission.controller;
+import com.example.umc10th_kaito.domain.mission.service.MissionService;
 import com.example.umc10th_kaito.global.apiPayload.ApiResponse;
 import com.example.umc10th_kaito.global.apiPayload.code.GeneralSuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -7,22 +8,23 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/missions")
 public class MissionController {
-    // GET /missions?status=CHALLENGING - 진행중 미션 목록
-    // GET /missions?status=COMPLETED   - 진행완료 미션 목록
+    private final MissionService missionService;
+    // GET /missions?status=CHALLENGING&userId=1&page=0&size=20
     @GetMapping
     public ApiResponse<?> getMissions(
             @RequestHeader("Authorization") String authorization,
             @RequestParam String status,
-            @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false, defaultValue = "20") Integer size,
-            @RequestParam(required = false) String sort) {
-        return ApiResponse.onSuccess(GeneralSuccessCode.OK, null);
+            @RequestParam Long userId,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "20") Integer size) {
+        return ApiResponse.onSuccess(GeneralSuccessCode.OK,
+                missionService.getMissions(userId, status, page, size));
     }
-    // POST /missions/{missionId}/success - 미션 성공 누르기
+    // POST /missions/{userMissionId}/success
     @PostMapping("/{missionId}/success")
     public ApiResponse<?> completeMission(
             @RequestHeader("Authorization") String authorization,
             @PathVariable Long missionId) {
-        return ApiResponse.onSuccess(GeneralSuccessCode.OK, null);
+        return ApiResponse.onSuccess(GeneralSuccessCode.OK, missionService.completeMission(missionId));
     }
 }
