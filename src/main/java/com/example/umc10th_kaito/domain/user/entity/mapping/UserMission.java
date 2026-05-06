@@ -1,38 +1,33 @@
 package com.example.umc10th_kaito.domain.user.entity.mapping;
-
 import com.example.umc10th_kaito.domain.common.BaseEntity;
 import com.example.umc10th_kaito.domain.mission.entity.Mission;
 import com.example.umc10th_kaito.domain.user.entity.User;
 import com.example.umc10th_kaito.domain.user.enums.MissionStatus;
 import jakarta.persistence.*;
 import lombok.*;
-
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "user_mission")
 public class UserMission extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
-    private MissionStatus status;
-
-    @Column(length = 10)
-    private String VerifyNum;
-
-    // 연관관계 매핑. 유저(Many)는 미션(One)에 속한다.
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    // 이 현황은 어떤 '미션'에 대한 것인지
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mission_id")
+    @JoinColumn(name = "mission_id", nullable = false)
     private Mission mission;
-
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    @Builder.Default
+    private MissionStatus status = MissionStatus.CHALLENGING;
+    @Column(name = "verify_num", length = 10)
+    private String verifyNum;
+    public void updateStatus(MissionStatus status) {
+        this.status = status;
+    }
 }
