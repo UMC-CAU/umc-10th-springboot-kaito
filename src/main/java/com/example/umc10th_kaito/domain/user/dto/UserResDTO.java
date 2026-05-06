@@ -15,4 +15,12 @@ public class UserResDTO {
         private Long userId;
         private List<String> foodCategories;
     }
+    @Getter @Builder
+    public static class MyPageResult {
+        private Long userId;
+        private String name;
+        private String email;
+        private String phoneNumber;
+        private Integer totalPoint;
+    }
 }
