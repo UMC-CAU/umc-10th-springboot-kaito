@@ -10,7 +10,7 @@ public class MissionResDTO {
         private String storeCategory;
         private String condition;
         private int rewardPoint;
-        private float rewardRate;
+        private String rewardType; // "POINT" 또는 "RATE"
         private Integer dDay;
         private String status;
         private LocalDateTime completedAt;

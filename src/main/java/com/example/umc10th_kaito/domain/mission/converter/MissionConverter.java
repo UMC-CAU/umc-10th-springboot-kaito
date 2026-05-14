@@ -10,6 +10,7 @@ public class MissionConverter {
                 .storeCategory(userMission.getMission().getStore().getCategory())
                 .condition(userMission.getMission().getContent())
                 .rewardPoint(userMission.getMission().getRewardValue())
+                .rewardType(userMission.getMission().getRewardType().name())  // 추가
                 .dDay(userMission.getMission().getDeadline())
                 .status(userMission.getStatus().name())
                 .completedAt(userMission.getStatus() == MissionStatus.COMPLETED

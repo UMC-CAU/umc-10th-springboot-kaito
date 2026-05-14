@@ -10,13 +10,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/missions")
 public class ReviewController {
     private final ReviewService reviewService;
-    // POST /missions/{userMissionId}/reviews
-    @PostMapping("/{missionId}/reviews")
+    @PostMapping("/{userMissionId}/reviews")
     public ApiResponse<?> createReview(
             @RequestHeader("Authorization") String authorization,
-            @PathVariable Long missionId,
+            @PathVariable Long userMissionId,
             @ModelAttribute ReviewReqDTO.CreateReview request) {
         return ApiResponse.onSuccess(GeneralSuccessCode.CREATED,
-                reviewService.createReview(missionId, request));
+                reviewService.createReview(userMissionId, request));
     }
 }

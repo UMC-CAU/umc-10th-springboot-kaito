@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 @Getter
 @AllArgsConstructor
-@JsonPropertyOrder({"isSuccess", "code", "message", "result"})
-public class ApiResponse<T> {
+@JsonPropertyOrder({"isSuccess", "code", "message", "result"}) // 클라이언트에게 보여지는 JSON 필드 순서 지정
+public class ApiResponse<T> { // T인 이유는 응답데이터(result) 자리에 다양한 타입이 올 수 있기 때문.
     @JsonProperty("isSuccess")
     private final Boolean isSuccess;
     private final String code;

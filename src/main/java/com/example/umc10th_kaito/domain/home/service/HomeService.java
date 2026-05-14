@@ -51,6 +51,7 @@ public class HomeService {
                 .storeCategory(m.getStore().getCategory())
                 .condition(m.getContent())
                 .rewardPoint(m.getRewardValue())
+                .rewardType(m.getRewardType().name())  // 추가
                 .dDay(m.getDeadline())
                 .status(m.getStatus().name())
                 .build();

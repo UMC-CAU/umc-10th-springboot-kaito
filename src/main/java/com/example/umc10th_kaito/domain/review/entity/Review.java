@@ -17,19 +17,25 @@ public class Review extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_mission_id", nullable = false, unique = true)
     private UserMission userMission;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String body;
+
     @Column(nullable = false)
     private Float score;
+
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     @Builder.Default
     private List<ReviewImage> reviewImageList = new ArrayList<>();

@@ -19,34 +19,46 @@ public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true, nullable = false, length = 50)
     private String email;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "social_type", nullable = false, length = 20)
     private SocialType socialType;
+
     @Column(name = "social_uid", unique = true, nullable = false)
     private String socialUid;
+
     @Column(nullable = false, length = 20)
     private String name;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
     @Builder.Default
     private Gender gender = Gender.NONE;
+
     @Column(name = "birth_rate")
     private LocalDate birthRate;
+
     @Column(length = 255)
     private String address;
+
     @Column(name = "phone_number", length = 15)
     private String phoneNumber;
+
     @Column(name = "is_phone_verified", nullable = false)
     @Builder.Default
     private Boolean isPhoneVerified = false;
+
     @Column(name = "total_point", nullable = false)
     @Builder.Default
     private Integer totalPoint = 0;
+
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private MemberStatus status = MemberStatus.ACTIVE;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
     private List<UserMission> userMissionList = new ArrayList<>();
