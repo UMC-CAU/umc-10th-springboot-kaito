@@ -18,7 +18,7 @@ public class Mission extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false)
-    private Store store;
+    private Store store; // Mission과 Store은 N:1관계, DB구조상 store_id라는 연결고리(외래키)는 N쪽 테이블에 생성.
 
     @Column(nullable = false)
     private String content;

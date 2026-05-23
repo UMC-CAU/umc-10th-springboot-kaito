@@ -2,6 +2,8 @@ package com.example.umc10th_kaito.domain.mission.converter;
 import com.example.umc10th_kaito.domain.mission.dto.MissionResDTO;
 import com.example.umc10th_kaito.domain.user.entity.mapping.UserMission;
 import com.example.umc10th_kaito.domain.user.enums.MissionStatus;
+import org.springframework.data.domain.Page;
+
 public class MissionConverter {
     public static MissionResDTO.MissionItem toMissionItem(UserMission userMission) {
         return MissionResDTO.MissionItem.builder()
@@ -22,6 +24,18 @@ public class MissionConverter {
                 .missionId(userMission.getId())
                 .status(userMission.getStatus().name())
                 .requestedAt(userMission.getUpdatedAt())
+                .build();
+    }
+
+    public static <T> MissionResDTO.OffsetPageResponse<T> toOffsetPageResponse(Page<T> page) {
+        return MissionResDTO.OffsetPageResponse.<T>builder()
+                .data(page.getContent())
+                .pageNumber(page.getNumber())
+                .pageSize(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .first(page.isFirst())
+                .last(page.isLast())
                 .build();
     }
 }

@@ -17,16 +17,19 @@ public class MissionService {
     private final UserMissionRepository userMissionRepository;
     // 미션 목록 조회 (진행중 / 진행완료, 페이징)
     @Transactional(readOnly = true)
-    public Page<MissionResDTO.MissionItem> getMissions(Long userId, String status, int page, int size) {
+    public MissionResDTO.OffsetPageResponse<MissionResDTO.MissionItem> getMissions(Long userId, String status, int page, int size) {
         MissionStatus missionStatus;
         try {
             missionStatus = MissionStatus.valueOf(status);
         } catch (IllegalArgumentException e) {
             throw new ProjectException(MissionErrorCode.MISSION_NOT_FOUND);
         }
-        return userMissionRepository
+        Page<MissionResDTO.MissionItem> missionPage = userMissionRepository
                 .findByUserIdAndStatus(userId, missionStatus, PageRequest.of(page, size))
-                .map(MissionConverter::toMissionItem);
+                .map(MissionConverter::toMissionItem); // 클래스명::메서드명
+                // 이 변환과정을 통해 상자 안의 알맹이가 Entity에서 DTO로 변경 후 좌변의 Page 상자에 담긴다.
+
+        return MissionConverter.toOffsetPageResponse(missionPage);
     }
     // 미션 성공 누르기
     @Transactional
