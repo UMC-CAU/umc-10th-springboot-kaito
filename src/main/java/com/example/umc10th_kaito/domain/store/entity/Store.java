@@ -1,18 +1,21 @@
 package com.example.umc10th_kaito.domain.store.entity;
-
 import com.example.umc10th_kaito.domain.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-
+import lombok.*;
 @Entity
 @Getter
 @Builder
-
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "store")
 public class Store extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "area_id", nullable = false)
+    private Area area;
 
     @Column(nullable = false, length = 50)
     private String name;
@@ -20,14 +23,9 @@ public class Store extends BaseEntity {
     @Column(nullable = false, length = 20)
     private String category;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String address;
 
+    @Column(columnDefinition = "FLOAT DEFAULT 0")
     private Float score;
-
-    // 연관관계 매핑. 가게(Many)는 지역(One)에 속한다.
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "area_id")
-    private Area area;
-
 }
