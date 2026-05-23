@@ -7,15 +7,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/missions")
 public class ReviewController {
     private final ReviewService reviewService;
-    @PostMapping("/{userMissionId}/reviews")
+    @PostMapping("/missions/{userMissionId}/reviews")
     public ApiResponse<?> createReview(
             @RequestHeader("Authorization") String authorization,
             @PathVariable Long userMissionId,
             @ModelAttribute ReviewReqDTO.CreateReview request) {
         return ApiResponse.onSuccess(GeneralSuccessCode.CREATED,
                 reviewService.createReview(userMissionId, request));
+    }
+
+    @GetMapping("/reviews")
+    public ApiResponse<?> getMyReviews(
+            @RequestHeader("Authorization") String authorization,
+            @RequestParam Long userId,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "-1") String cursor,
+            @RequestParam(defaultValue = "id") String query) {
+        return ApiResponse.onSuccess(GeneralSuccessCode.OK,
+                reviewService.getMyReviews(userId, pageSize, cursor, query));
     }
 }
