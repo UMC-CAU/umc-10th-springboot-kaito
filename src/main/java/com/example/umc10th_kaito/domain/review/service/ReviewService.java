@@ -42,7 +42,7 @@ public class ReviewService {
     }
 
     // 리뷰 목록 조회 (페이징, 커서 기반)
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) // DB를 읽기만 하는 메서드
     public ReviewResDTO.CursorPageResponse<ReviewResDTO.ReviewItem> getMyReviews(
             Long userId, Integer pageSize, String cursor, String query) {
 

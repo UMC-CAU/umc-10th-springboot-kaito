@@ -25,6 +25,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             @Param("userId") Long userId,
             Pageable pageable);
 
+    // score 기준 이후 페이지
     @Query("SELECT r FROM Review r WHERE r.user.id = :userId " +
             "AND (r.score < :score OR (r.score = :score AND r.id < :id)) " +
             "ORDER BY r.score DESC, r.id DESC")
