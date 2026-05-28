@@ -23,11 +23,15 @@ public class User extends BaseEntity {
     @Column(unique = true, nullable = false, length = 50)
     private String email;
 
+    @Column(length = 255)
+    private String password;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "social_type", nullable = false, length = 20)
-    private SocialType socialType;
+    @Builder.Default
+    private SocialType socialType = SocialType.LOCAL;
 
-    @Column(name = "social_uid", unique = true, nullable = false)
+    @Column(name = "social_uid", unique = true)
     private String socialUid;
 
     @Column(nullable = false, length = 20)

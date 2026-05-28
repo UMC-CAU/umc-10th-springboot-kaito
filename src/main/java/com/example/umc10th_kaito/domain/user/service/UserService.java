@@ -7,18 +7,21 @@ import com.example.umc10th_kaito.domain.user.enums.UserErrorCode;
 import com.example.umc10th_kaito.domain.user.repository.UserRepository;
 import com.example.umc10th_kaito.global.apiPayload.exception.ProjectException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     @Transactional
     public UserResDTO.RegisterResult register(UserReqDTO.Register request) { // JSON 데이터를 DTO 객체로 받는다.
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new ProjectException(UserErrorCode.EMAIL_ALREADY_EXISTS);
         }
-        User user = UserConverter.toUser(request); // 받은 DTO객체를 엔티티로 변환한다.
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        User user = UserConverter.toUser(request, encodedPassword); // 받은 DTO객체를 엔티티로 변환한다.
         return UserConverter.toRegisterResult(userRepository.save(user));
     }
     @Transactional(readOnly = true)

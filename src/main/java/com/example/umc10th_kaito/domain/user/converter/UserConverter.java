@@ -5,12 +5,12 @@ import com.example.umc10th_kaito.domain.user.entity.User;
 import com.example.umc10th_kaito.domain.user.enums.SocialType;
 import java.time.LocalDateTime;
 public class UserConverter {
-    public static User toUser(UserReqDTO.Register request) { // 1. DTO를 인자로 받아서 엔티티로 바꾸는 곳 (저장하기 위해)
+    public static User toUser(UserReqDTO.Register request, String encodedPassword) { // 1. DTO를 인자로 받아서 엔티티로 바꾸는 곳 (저장하기 위해)
         return User.builder()
                 .email(request.getEmail())
+                .password(encodedPassword)      // BCrypt 암호화된 비밀번호 저장
                 .name(request.getName())
-                .socialType(SocialType.KAKAO) // 임시 (소셜 로그인 미구현)
-                .socialUid(request.getEmail()) // 임시
+                .socialType(SocialType.LOCAL)   // 임시 → LOCAL로 변경
                 .address(request.getAddress())
                 .build();
     }
