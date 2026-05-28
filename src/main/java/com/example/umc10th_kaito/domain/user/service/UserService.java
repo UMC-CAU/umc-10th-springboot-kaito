@@ -1,4 +1,5 @@
 package com.example.umc10th_kaito.domain.user.service;
+
 import com.example.umc10th_kaito.domain.user.converter.UserConverter;
 import com.example.umc10th_kaito.domain.user.dto.UserReqDTO;
 import com.example.umc10th_kaito.domain.user.dto.UserResDTO;
@@ -6,28 +7,50 @@ import com.example.umc10th_kaito.domain.user.entity.User;
 import com.example.umc10th_kaito.domain.user.enums.UserErrorCode;
 import com.example.umc10th_kaito.domain.user.repository.UserRepository;
 import com.example.umc10th_kaito.global.apiPayload.exception.ProjectException;
+import com.example.umc10th_kaito.global.security.AuthUser;
+import com.example.umc10th_kaito.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+
+    // 회원가입
     @Transactional
-    public UserResDTO.RegisterResult register(UserReqDTO.Register request) { // JSON 데이터를 DTO 객체로 받는다.
+    public UserResDTO.RegisterResult register(UserReqDTO.Register request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new ProjectException(UserErrorCode.EMAIL_ALREADY_EXISTS);
         }
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-        User user = UserConverter.toUser(request, encodedPassword); // 받은 DTO객체를 엔티티로 변환한다.
+        String encoded = passwordEncoder.encode(request.getPassword());
+        User user = UserConverter.toUser(request, encoded);
         return UserConverter.toRegisterResult(userRepository.save(user));
     }
+
+    // 로그인 → JWT 토큰 발급
     @Transactional(readOnly = true)
-    public UserResDTO.MyPageResult getMyPage(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ProjectException(UserErrorCode.USER_NOT_FOUND)); // 이 줄이 실행되는 순간, 메모리에 ProjectException 객체가 생성되고, 그 객체는 UserErrorCode.USER_NOT_FOUND를 포함하게 된다. 그리고 나서 throw 키워드에 의해 이 예외가 즉시 던져진다. 이 예외는 호출 스택을 따라 올라가면서 적절한 예외 처리기에 의해 처리될 때까지 전파된다.
-        return UserConverter.toMyPageResult(user);
+    public UserResDTO.LoginResult login(UserReqDTO.Login request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ProjectException(UserErrorCode.USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new ProjectException(UserErrorCode.INVALID_PASSWORD);
+        }
+
+        AuthUser authUser = new AuthUser(user);
+        String accessToken = jwtUtil.createAccessToken(authUser);
+        return UserConverter.toLoginResult(accessToken);
+    }
+
+    // 마이페이지 - 인증 객체에서 User 직접 추출 (DB 조회 불필요)
+    @Transactional(readOnly = true)
+    public UserResDTO.MyPageResult getMyPage(AuthUser authUser) {
+        return UserConverter.toMyPageResult(authUser.getUser());
     }
 }
