@@ -21,20 +21,12 @@ import java.io.IOException;
 public class CustomAccessDenied implements AccessDeniedHandler {
 
     @Override
-    public void handle(
+    public void handle( // 인가 실패 시 Spring이 호출
             HttpServletRequest request,
             HttpServletResponse response,
             AccessDeniedException accessDeniedException
     ) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        BaseErrorCode code = GeneralErrorCode.FORBIDDEN;
-
-        // 응답 형식 설정
-        response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(code.getStatus().value());
-
-        // ApiResponse 형식으로 응답 통일
-        ApiResponse<Void> errorResponse = ApiResponse.onFailure(code, null);
-        objectMapper.writeValue(response.getOutputStream(), errorResponse);
+        // SecurityResponsUtil.java 추가함으로써 코드 단축
+        SecurityResponseUtil.writeErrorResponse(response, GeneralErrorCode.FORBIDDEN);
     }
 }

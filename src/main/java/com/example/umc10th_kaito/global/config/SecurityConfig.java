@@ -20,14 +20,6 @@ public class SecurityConfig {
     private final CustomAccessDenied customAccessDenied;
     private final CustomEntryPoint customEntryPoint;
 
-    // 로그인 없이 접근 가능한 URL 목록
-    private final String[] allowUris = {
-            "/swagger-ui/**",
-            "/swagger-resources/**",
-            "/v3/api-docs/**",
-            "/auth/**",    // 회원가입, 로그인
-            "/error"
-    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
