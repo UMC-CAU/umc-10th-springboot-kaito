@@ -1,4 +1,4 @@
-package com.example.umc10th_kaito.global.security;
+package com.example.umc10th_kaito.global.security.exception;
 
 import com.example.umc10th_kaito.global.apiPayload.ApiResponse;
 import com.example.umc10th_kaito.global.apiPayload.code.BaseErrorCode;

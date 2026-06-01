@@ -1,8 +1,9 @@
-package com.example.umc10th_kaito.global.security;
+package com.example.umc10th_kaito.global.security.service;
 
 import com.example.umc10th_kaito.domain.user.enums.UserErrorCode;
 import com.example.umc10th_kaito.domain.user.repository.UserRepository;
 import com.example.umc10th_kaito.global.apiPayload.exception.ProjectException;
+import com.example.umc10th_kaito.global.security.entity.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,4 +1,4 @@
-package com.example.umc10th_kaito.global.security;
+package com.example.umc10th_kaito.global.security.entity;
 
 import com.example.umc10th_kaito.domain.user.entity.User;
 import lombok.Getter;

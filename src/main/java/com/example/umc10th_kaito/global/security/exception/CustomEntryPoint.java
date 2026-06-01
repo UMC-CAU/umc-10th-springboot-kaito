@@ -1,9 +1,6 @@
-package com.example.umc10th_kaito.global.security;
+package com.example.umc10th_kaito.global.security.exception;
 
-import com.example.umc10th_kaito.global.apiPayload.ApiResponse;
-import com.example.umc10th_kaito.global.apiPayload.code.BaseErrorCode;
 import com.example.umc10th_kaito.global.apiPayload.code.GeneralErrorCode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;

@@ -1,7 +1,7 @@
 package com.example.umc10th_kaito.global.config;
 
-import com.example.umc10th_kaito.global.security.CustomAccessDenied;
-import com.example.umc10th_kaito.global.security.CustomEntryPoint;
+import com.example.umc10th_kaito.global.security.exception.CustomAccessDenied;
+import com.example.umc10th_kaito.global.security.exception.CustomEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity   // Spring Security 설정을 활성화. 내가 만든 설정이 기본 설정보다 우선 적용됨
 @Configuration       // 이 클래스가 설정 파일임을 선언
@@ -38,10 +39,10 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
-                        .defaultSuccessUrl("/swagger-ui/index.html", true)
-                        .permitAll()
-                )
+                .formLogin(AbstractHttpConfigurer::disable) // HTML 로그인 폼 비활성화
+                .sessionManagement(AbstractHttpConfigurer::disable) // JWT를 쓸거니까 비활성화
+                // JWT 필터
+                .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
