@@ -1,7 +1,10 @@
+package com.example.umc10th_kaito.global.security.filter;
+
 import com.example.umc10th_kaito.global.apiPayload.ApiResponse;
 import com.example.umc10th_kaito.global.apiPayload.code.BaseErrorCode;
 import com.example.umc10th_kaito.global.apiPayload.code.GeneralErrorCode;
 import com.example.umc10th_kaito.global.security.service.CustomUserDetailsService;
+import com.example.umc10th_kaito.global.security.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NonNull;
 
 import java.io.IOException;
 
