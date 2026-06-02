@@ -6,6 +6,7 @@ import com.example.umc10th_kaito.domain.user.entity.User;
 import com.example.umc10th_kaito.domain.user.enums.UserErrorCode;
 import com.example.umc10th_kaito.domain.user.repository.UserRepository;
 import com.example.umc10th_kaito.global.apiPayload.exception.ProjectException;
+import com.example.umc10th_kaito.global.security.entity.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,19 +16,39 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;  // 추가: JWT 토큰 발급을 위해 DI
+
     @Transactional
-    public UserResDTO.RegisterResult register(UserReqDTO.Register request) { // JSON 데이터를 DTO 객체로 받는다.
+    public UserResDTO.RegisterResult register(UserReqDTO.Register request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new ProjectException(UserErrorCode.EMAIL_ALREADY_EXISTS);
         }
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        User user = UserConverter.toUser(request, encodedPassword); // 받은 DTO객체를 엔티티로 변환한다.
+        User user = UserConverter.toUser(request, encodedPassword);
         return UserConverter.toRegisterResult(userRepository.save(user));
     }
+
+    // 추가: 로그인 - 이메일/비밀번호 검증 후 JWT 발급
     @Transactional(readOnly = true)
-    public UserResDTO.MyPageResult getMyPage(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ProjectException(UserErrorCode.USER_NOT_FOUND)); // 이 줄이 실행되는 순간, 메모리에 ProjectException 객체가 생성되고, 그 객체는 UserErrorCode.USER_NOT_FOUND를 포함하게 된다. 그리고 나서 throw 키워드에 의해 이 예외가 즉시 던져진다. 이 예외는 호출 스택을 따라 올라가면서 적절한 예외 처리기에 의해 처리될 때까지 전파된다.
-        return UserConverter.toMyPageResult(user);
+    public UserResDTO.LoginResult login(UserReqDTO.Login request) {
+        // 1. 이메일로 유저 찾기
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ProjectException(UserErrorCode.USER_NOT_FOUND));
+
+        // 2. 비밀번호 검증
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new ProjectException(UserErrorCode.INVALID_PASSWORD);
+        }
+
+        // 3. JWT 토큰 발급
+        AuthUser authUser = new AuthUser(user);
+        String accessToken = jwtUtil.createAccessToken(authUser);
+        return UserConverter.toLoginResult(accessToken);
+    }
+
+    // 개선: userId 대신 AuthUser에서 바로 User 꺼내서 반환 (DB 조회 불필요)
+    @Transactional(readOnly = true)
+    public UserResDTO.MyPageResult getMyPage(AuthUser authUser) {
+        return UserConverter.toMyPageResult(authUser.getUser());
     }
 }
