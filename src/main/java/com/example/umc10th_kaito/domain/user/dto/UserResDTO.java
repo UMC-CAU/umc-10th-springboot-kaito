@@ -12,12 +12,21 @@ public class UserResDTO {
         private String email;
         private LocalDateTime createdAt;
     }
+
+    // 로그인 응답 - JWT 토큰 담는 그릇
+    @Getter @Builder
+    @JsonPropertyOrder({"accessToken"})
+    public static class LoginResult {
+        private String accessToken;
+    }
+
     @Getter @Builder
     @JsonPropertyOrder({"userId", "foodCategories"})
     public static class PreferencesResult {
         private Long userId;
         private List<String> foodCategories;
     }
+
     @Getter @Builder
     @JsonPropertyOrder({"userId", "name", "email", "phoneNumber", "totalPoint"})
     public static class MyPageResult {
