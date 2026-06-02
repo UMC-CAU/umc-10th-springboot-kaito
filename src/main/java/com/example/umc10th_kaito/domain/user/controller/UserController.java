@@ -25,8 +25,5 @@ public class UserController {
         return ApiResponse.onSuccess(GeneralSuccessCode.CREATED, null);
     }
     // GET /auth/mypage?userId=1
-    @GetMapping("/mypage")
-    public ApiResponse<?> getMyPage(@RequestParam Long userId) {
-        return ApiResponse.onSuccess(GeneralSuccessCode.OK, userService.getMyPage(userId));
-    }
+     
 }

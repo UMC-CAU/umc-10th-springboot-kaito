@@ -22,3 +22,22 @@ spring:
       secretKey: ${JWT_SECRET_KEY}
       expiration:
         access: 1800000 # 30분
+
+  security:
+    oauth2:
+      client: # OAuth에서 클라이언트는 "카카오한테 로그인을 요청하는 주체" 즉, "우리 서버"임.
+        registration:
+          kakao:
+            client-id: ${KAKAO_REST_API_KEY} # 카카오가 우리 서버를 식별하기 위한 값
+            client-secret: ${KAKAO_REST_API_SECRET}
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://localhost:8080/oauth/callback/kakao"
+            scope:
+              - profile_nickname
+              - account_email
+        provider:
+          kakao:
+            authorization-uri: "https://kauth.kakao.com/oauth/authorize"
+            token-uri: "https://kauth.kakao.com/oauth/token"
+            user-info-uri: "https://kapi.kakao.com/v2/user/me"
+            userNameAttribute: id
