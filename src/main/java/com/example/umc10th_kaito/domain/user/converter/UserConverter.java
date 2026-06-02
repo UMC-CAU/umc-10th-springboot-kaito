@@ -3,6 +3,8 @@ import com.example.umc10th_kaito.domain.user.dto.UserReqDTO;
 import com.example.umc10th_kaito.domain.user.dto.UserResDTO;
 import com.example.umc10th_kaito.domain.user.entity.User;
 import com.example.umc10th_kaito.domain.user.enums.SocialType;
+import com.example.umc10th_kaito.global.security.dto.OAuthDTO;
+
 import java.time.LocalDateTime;
 public class UserConverter {
     public static User toUser(UserReqDTO.Register request, String encodedPassword) { // 1. DTO를 인자로 받아서 엔티티로 바꾸는 곳 (저장하기 위해)
@@ -13,6 +15,17 @@ public class UserConverter {
                 .socialType(SocialType.LOCAL)   // 임시 → LOCAL로 변경
                 .socialUid(request.getEmail())  // 추가: LOCAL 유저는 이메일을 socialUid로 사용
                 .address(request.getAddress())
+                .build();
+    }
+
+    // OAuth 소셜 로그인 유저 → User 엔티티 변환
+    public static User toOAuthUser(OAuthDTO dto) {
+        return User.builder()
+                .email(dto.getSocialEmail())
+                .password("")                    // 소셜 로그인은 비밀번호 없음
+                .name(dto.getName())
+                .socialType(dto.getSocialType())
+                .socialUid(dto.getSocialUid())
                 .build();
     }
 
