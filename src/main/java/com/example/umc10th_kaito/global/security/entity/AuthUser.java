@@ -31,7 +31,9 @@ public class AuthUser implements UserDetails {
         return user.getPassword();
     }
 
-    // Security가 로그인 식별자로 사용할 값 → 이메일
+    // Security가 로그인 식별자로 사용할 값
+    // 일반 로그인: 이메일 반환
+    // JWT 토큰 생성 시: JwtUtil에서 user.getSocialUid() 직접 사용
     @Override
     public String getUsername() {
         return user.getEmail();
