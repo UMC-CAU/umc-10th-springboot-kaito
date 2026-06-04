@@ -1,5 +1,6 @@
 package com.example.umc10th_kaito.global.security.service;
 
+import com.example.umc10th_kaito.domain.user.enums.SocialType;
 import com.example.umc10th_kaito.domain.user.enums.UserErrorCode;
 import com.example.umc10th_kaito.domain.user.repository.UserRepository;
 import com.example.umc10th_kaito.global.apiPayload.exception.ProjectException;
@@ -28,6 +29,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username)
                 .map(AuthUser::new)           // User 엔티티를 AuthUser로 감싸서 반환
+                .orElseThrow(() -> new ProjectException(UserErrorCode.USER_NOT_FOUND));
+    }
+
+    // JWT 필터에서 사용 (socialType + socialUid로 조회)
+    public UserDetails loadUserByUidAndSocialType(SocialType socialType, String uid) {
+        return userRepository.findBySocialTypeAndSocialUid(socialType, uid)
+                .map(AuthUser::new)
                 .orElseThrow(() -> new ProjectException(UserErrorCode.USER_NOT_FOUND));
     }
 }
