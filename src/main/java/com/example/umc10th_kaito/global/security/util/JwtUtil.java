@@ -79,7 +79,7 @@ public class JwtUtil {
         return Jwts.builder() // Payload 부분에 정보 담기
                 .subject(authUser.getUser().getSocialUid())  // socialUid를 Subject로
                 .claim("role", authorities) // .claim("role","USER") -> {"role":"USER"}
-                .claim("email", authUser.getUsername())
+                .claim("social_type", authUser.getUser().getSocialType())
                 .issuedAt(Date.from(now)) // 언제 발급한지
                 .expiration(Date.from(now.plus(expiration))) // 언제까지 유효한지, 여기까지가 페이로드 구성
                 .signWith(secretKey) // 헤더 결정 (알고리즘 명시)
