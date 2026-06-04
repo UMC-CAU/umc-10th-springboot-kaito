@@ -1,24 +1,24 @@
 package com.example.umc10th_kaito.global.security.util;
 
+import com.example.umc10th_kaito.domain.user.enums.SocialType;
 import com.example.umc10th_kaito.global.security.entity.AuthUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Value;
-import java.util.Date;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 @Component
-
 public class JwtUtil {
 
     private final SecretKey secretKey;
@@ -37,27 +37,30 @@ public class JwtUtil {
         return createToken(authUser, accessExpiration);
     }
 
-    /** 토큰에서 이메일 가져오기
-     *
-     * @param token 유저 정보를 추출할 토큰
-     * @return 유저 이메일을 토큰에서 추출합니다
-     */
-    public String getEmail(String token) {
+    // 토큰에서 socialUid 가져오기
+    public String getUid(String token) {
         try {
-            return getClaims(token).getPayload().getSubject(); // Parsing해서 Subject 가져오기
+            return getClaims(token).getPayload().getSubject();
         } catch (JwtException e) {
             return null;
         }
     }
 
-    /** 토큰 유효성 확인
-     *
-     * @param token 유효한지 확인할 토큰
-     * @return True, False 반환합니다
-     */
+    // 토큰에서 소셜 타입 가져오기
+    public SocialType getSocialType(String token) {
+        try {
+            return SocialType.valueOf(
+                    getClaims(token).getPayload().get("social_type").toString().toUpperCase()
+            );
+        } catch (JwtException e) {
+            return null;
+        }
+    }
+
+    // 토큰 유효성 확인
     public boolean isValid(String token) {
         try {
-            getClaims(token); // 여기서 4가지 예외 다 터짐
+            getClaims(token);
             return true;
         } catch (JwtException e) {
             return false;
@@ -74,7 +77,7 @@ public class JwtUtil {
                 .collect(Collectors.joining(","));
 
         return Jwts.builder() // Payload 부분에 정보 담기
-                .subject(authUser.getUsername()) // User 이메일을 Subject로
+                .subject(authUser.getUser().getSocialUid())  // socialUid를 Subject로
                 .claim("role", authorities) // .claim("role","USER") -> {"role":"USER"}
                 .claim("email", authUser.getUsername())
                 .issuedAt(Date.from(now)) // 언제 발급한지
